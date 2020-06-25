@@ -1,10 +1,11 @@
 package sample1
 
 import (
-	"testing"
-	"time"
 	"fmt"
 	"sort"
+	"sync/atomic"
+	"testing"
+	"time"
 )
 
 // mockResult has the float64 and err to return
@@ -14,15 +15,15 @@ type mockResult struct {
 }
 
 type mockPriceService struct {
-	numCalls    int
+	numCalls    int32
 	mockResults map[string]mockResult // what price and err to return for a particular itemCode
 	callDelay   time.Duration         // how long to sleep on each call so that we can simulate calls to be expensive
 }
 
 func (m *mockPriceService) GetPriceFor(itemCode string) (float64, error) {
 
-	m.numCalls++            // increase the number of calls
-	time.Sleep(m.callDelay) // sleep to simulate expensive call
+	atomic.AddInt32(&m.numCalls, 1) // syncronized increase the number of calls
+	time.Sleep(m.callDelay)         // sleep to simulate expensive call
 
 	result, ok := m.mockResults[itemCode]
 	if !ok {
@@ -31,7 +32,7 @@ func (m *mockPriceService) GetPriceFor(itemCode string) (float64, error) {
 	return result.price, result.err
 }
 
-func (m *mockPriceService) getNumCalls() int {
+func (m *mockPriceService) getNumCalls() int32 {
 	return m.numCalls
 }
 
@@ -51,7 +52,7 @@ func getPricesWithNoErr(t *testing.T, cache *TransparentCache, itemCodes ...stri
 	return prices
 }
 
-func assertInt(t *testing.T, expected int, actual int, msg string) {
+func assertInt(t *testing.T, expected int32, actual int32, msg string) {
 	if expected != actual {
 		t.Error(msg, fmt.Sprintf("expected : %v, got : %v", expected, actual))
 	}
@@ -164,7 +165,8 @@ func TestGetPricesFor_ParallelizeCalls(t *testing.T) {
 	}
 	cache := NewTransparentCache(mockService, time.Minute)
 	start := time.Now()
-	assertFloats(t, []float64{5, 7}, getPricesWithNoErr(t, cache, "p1", "p2"), "wrong price returned")
+	assertFloats(t, []float64{5, 7}, getPricesWithNoErr(t, cache, "p1", "p1", "p2", "p2", "p2", "p2", "p2"), "wrong price returned")
+	assertInt(t, 2, mockService.getNumCalls(), "wrong number of service calls")
 	elapsedTime := time.Since(start)
 	if elapsedTime > (1200 * time.Millisecond) {
 		t.Error("calls took too long, expected them to take a bit over one second")
