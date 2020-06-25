@@ -40,7 +40,10 @@ Please email your solution as soon as you have completed the challenge or the ti
 ## Decisions Taken
 * In order to control de maxage, I created new struct that will store the timestamp so I can use it to compare against max age.
 I will setup that timestamp inside the getPrice method just after storing it into the map. I will preserv the getPrice original signature, so there is no need to modify the tests.
+* In order to add asyc, I created a new function in the transparentChange so I can call it using a Go routine. Also I created a 
+new channel to share the price and error. Finally I use a counter to determine when I have to close the channel.
 
 ## Important Notes
 * First of all I will run the tests in order to validate what is going on.
 * After any significant change I run the tests.
+* After first iterate over the sync TODO and running tests I notice that I need to apply some condition to end the channel range, because it blocks.
