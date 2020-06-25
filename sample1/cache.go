@@ -21,30 +21,36 @@ type PriceService interface {
 type TransparentCache struct {
 	actualPriceService PriceService
 	maxAge             time.Duration
-	prices             map[string]float64
+	prices             map[string]Price
+}
+
+type Price struct {
+	price     float64
+	timestamp time.Time
 }
 
 func NewTransparentCache(actualPriceService PriceService, maxAge time.Duration) *TransparentCache {
 	return &TransparentCache{
 		actualPriceService: actualPriceService,
 		maxAge:             maxAge,
-		prices:             map[string]float64{},
+		prices:             map[string]Price{},
 	}
 }
 
 // GetPriceFor gets the price for the item, either from the cache or the actual service if it was not cached or too old
 func (c *TransparentCache) GetPriceFor(itemCode string) (float64, error) {
-	price, ok := c.prices[itemCode]
-	if ok {
-		// TODO: check that the price was retrieved less than "maxAge" ago!
-		return price, nil
+	if cachedPrice, ok := c.prices[itemCode]; ok {
+		// DONE: check that the price was retrieved less than "maxAge" ago!
+		if time.Since(cachedPrice.timestamp) <= c.maxAge {
+			return cachedPrice.price, nil
+		}
 	}
 	price, err := c.actualPriceService.GetPriceFor(itemCode)
 	if err != nil {
 		return 0, fmt.Errorf("getting price from service : %v", err.Error())
 	}
-	c.prices[itemCode] = price
-	return price, nil
+	c.prices[itemCode] = Price{price, time.Now()}
+	return c.prices[itemCode].price, nil
 }
 
 // GetPricesFor gets the prices for several items at once, some might be found in the cache, others might not

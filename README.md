@@ -43,3 +43,4 @@ I will setup that timestamp inside the getPrice method just after storing it int
 
 ## Important Notes
 * First of all I will run the tests in order to validate what is going on.
+* After any significant change I run the tests.
