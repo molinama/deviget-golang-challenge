@@ -6,6 +6,7 @@ Packege to get prices using a transparent cache.
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -22,6 +23,7 @@ type TransparentCache struct {
 	actualPriceService PriceService
 	maxAge             time.Duration
 	prices             map[string]Price
+	mux                sync.Mutex
 }
 
 type Price struct {
@@ -54,6 +56,8 @@ func (c *TransparentCache) GetPriceFor(itemCode string) (float64, error) {
 	if err != nil {
 		return 0, fmt.Errorf("getting price from service : %v", err.Error())
 	}
+	c.mux.Lock()
+	defer c.mux.Unlock()
 	c.prices[itemCode] = Price{price, time.Now()}
 	return c.prices[itemCode].price, nil
 }
@@ -63,10 +67,24 @@ func (c *TransparentCache) AsyncGetPriceFor(itemCode string, pricesCh chan Price
 	pricesCh <- PriceFromCh{price, err}
 }
 
+//Filter intemCodes to get non duplicated. Like a Set.
+func unique(itemCodes []string) []string {
+	keys := make(map[string]bool)
+	list := []string{}
+	for _, entry := range itemCodes {
+		if _, value := keys[entry]; !value {
+			keys[entry] = true
+			list = append(list, entry)
+		}
+	}
+	return list
+}
+
 // GetPricesFor gets the prices for several items at once, some might be found in the cache, others might not
 // If any of the operations returns an error, it should return an error as well
 func (c *TransparentCache) GetPricesFor(itemCodes ...string) ([]float64, error) {
 	results := []float64{}
+	itemCodes = unique(itemCodes)
 	pricesCh := make(chan PriceFromCh, len(itemCodes))
 	for _, itemCode := range itemCodes {
 		// DONE: parallelize this, it can be optimized to not make the calls to the external service sequentially

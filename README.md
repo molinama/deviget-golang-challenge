@@ -48,3 +48,4 @@ new buffered channel (to avoid blocking) to share the price and error. Finally I
 * First of all I will run the tests in order to validate what is going on.
 * After any significant change I run the tests.
 * After first iterate over the sync TODO and running tests I notice that I need to apply some condition to end the channel range, because it blocks.
+* After running the parallel test modification I detected some issues to solve.
