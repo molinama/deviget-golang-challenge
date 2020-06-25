@@ -1,4 +1,4 @@
-package sample1
+package cache
 
 /*
 Packege to get prices using a transparent cache.

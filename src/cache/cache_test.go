@@ -1,4 +1,4 @@
-package sample1
+package cache
 
 import (
 	"fmt"
@@ -171,4 +171,21 @@ func TestGetPricesFor_ParallelizeCalls(t *testing.T) {
 	if elapsedTime > (1200 * time.Millisecond) {
 		t.Error("calls took too long, expected them to take a bit over one second")
 	}
+}
+
+func TestGetPricesFor_ReturnsErrorOnServiceError(t *testing.T) {
+	mockService := &mockPriceService{
+		callDelay: time.Second, // each call to external service takes one full second
+		mockResults: map[string]mockResult{
+			"p1": {price: 5, err: nil},
+			"p2": {price: 0, err: fmt.Errorf("some error")},
+		},
+	}
+	cache := NewTransparentCache(mockService, time.Minute)
+	prices, err := cache.GetPricesFor("p1", "p1", "p2", "p2")
+	if err == nil {
+		t.Errorf("expected error, got nil")
+	}
+	assertFloats(t, []float64{}, prices, "wrong price returned")
+	assertInt(t, 2, mockService.getNumCalls(), "wrong number of service calls")
 }
