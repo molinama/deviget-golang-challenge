@@ -1,8 +1,12 @@
 package sample1
 
+/*
+Packege to get prices using a transparent cache.
+*/
+
 import (
-	"time"
 	"fmt"
+	"time"
 )
 
 // PriceService is a service that we can use to get prices for the items
