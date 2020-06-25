@@ -43,9 +43,11 @@ I will setup that timestamp inside the getPrice method just after storing it int
 * In order to add asyc, I created a new function in the transparentChange so I can call it using a Go routine. Also I created a 
 new buffered channel (to avoid blocking) to share the price and error. Finally I use a counter to determine when I have to close the channel.
 * I update parallel test to valite the async call.
+* Run a test coverage and create new tests.
 
 ## Important Notes
 * First of all I will run the tests in order to validate what is going on.
 * After any significant change I run the tests.
 * After first iterate over the sync TODO and running tests I notice that I need to apply some condition to end the channel range, because it blocks.
 * After running the parallel test modification I detected some issues to solve.
+* In NewTransparentCache there should be a validation on the maxage to be sure not negative value, and also a Test.

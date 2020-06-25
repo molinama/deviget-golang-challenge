@@ -1,0 +1,22 @@
+mode: set
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:39.99,45.2 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:48.74,49.47 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:55.2,56.16 2 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:59.2,62.38 4 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:49.47,51.52 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:51.52,53.4 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:56.16,58.3 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:65.89,68.2 2 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:71.42,74.34 3 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:80.2,80.13 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:74.34,75.38 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:75.38,78.4 2 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:85.81,89.37 4 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:93.2,94.26 2 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:104.2,104.21 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:89.37,92.3 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:94.26,95.19 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:98.3,99.26 2 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:102.3,102.6 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:95.19,97.4 1 1
+github.com/molinama/deviget-golang-challenge/src/cache/cache.go:99.26,101.4 1 1
